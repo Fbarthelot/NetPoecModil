@@ -25,6 +25,8 @@ import com.exemple.poec.netpoecmobil.task.ProfilTask;
 
 import org.parceler.Parcels;
 
+import hugo.weaving.DebugLog;
+
 public class FilmActivity extends AppCompatActivity implements ProfilTask.ProfilTaskObserver {
 
     /**
@@ -95,10 +97,13 @@ public class FilmActivity extends AppCompatActivity implements ProfilTask.Profil
     }
 
     @Override
-    public void onSuccess(User User) {
+    @DebugLog
+    public void onSuccess(User user) {
 
         Intent intent = new Intent(FilmActivity.this, ProfilActivity.class);
-//        intent.putExtra("user", Parcels.wrap(user));
+        intent.putExtra("email", Parcels.wrap(user.email));
+        intent.putExtra("firstName", Parcels.wrap(user.firstName));
+        intent.putExtra("lastName", Parcels.wrap(user.lastName));
         startActivity(intent);
     }
 

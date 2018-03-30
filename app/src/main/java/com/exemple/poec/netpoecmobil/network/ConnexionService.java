@@ -19,6 +19,8 @@ public class ConnexionService {
         retrofit = new Retrofit.Builder()
                 //connexion sur la machine de patrick
                 .baseUrl("http://10.110.11.108:9000/api/")
+                //connexion sur la machine de fabien
+//                .baseUrl("http://10.110.11.110:9000/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

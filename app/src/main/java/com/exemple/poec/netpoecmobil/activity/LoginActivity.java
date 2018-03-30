@@ -285,11 +285,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     ConnexionTask connexionTask =new ConnexionTask(UserLoginTask.this);
                     connexionTask.postNewUser(mEmail,mPassword);
 
-//                    if (id!= -1) {
-
-
-//                    }
-
                 }
 
                 @Override
@@ -302,36 +297,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
 
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            mAuthTask = null;
+//
+////            if (success) {
+////
+////            } else {
+////                mPasswordView.setError(getString(R.string.error_incorrect_password));
+////                mPasswordView.requestFocus();
+////            }
+//        }
+
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-
-
-            if (success) {
-
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
+        @DebugLog
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
         }
 
         @Override
+        @DebugLog
         public void onSuccess() {
-
             Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
             startActivity(intent);
         }
 
         @Override
+        @DebugLog
         public void onError() {
             Toast.makeText(LoginActivity.this, " utilisateur inconnue", Toast.LENGTH_LONG).show();
-
 
         }
 

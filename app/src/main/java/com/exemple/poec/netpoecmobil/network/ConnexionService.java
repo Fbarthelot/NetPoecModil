@@ -1,5 +1,6 @@
 package com.exemple.poec.netpoecmobil.network;
 
+import com.exemple.poec.netpoecmobil.models.Messages;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -18,9 +19,9 @@ public class ConnexionService {
     private ConnexionService() {
         retrofit = new Retrofit.Builder()
                 //connexion sur la machine de patrick
-                .baseUrl("http://10.110.11.108:9000/api/")
+//                .baseUrl("http://10.110.11.108:9000/api/")
                 //connexion sur la machine de fabien
-//                .baseUrl("http://10.110.11.110:9000/api/")
+                .baseUrl("http://10.110.11.110:9000/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -35,7 +36,7 @@ public class ConnexionService {
     }
 
     @DebugLog
-    public Call<Long> connexion(String email,String password) {
+    public Call<Messages> connexion(String email, String password) {
 
         return api.connexion(email,password);
 

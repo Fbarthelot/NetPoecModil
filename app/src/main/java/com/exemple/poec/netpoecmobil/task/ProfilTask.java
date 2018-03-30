@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.exemple.poec.netpoecmobil.activity.FilmActivity;
 import com.exemple.poec.netpoecmobil.activity.LoginActivity;
+import com.exemple.poec.netpoecmobil.models.Messages;
 
 public class ProfilTask extends AsyncTask<Void, Void, Boolean> implements ConnexionTask.ConnexionTaskObserver{
     @Override
@@ -15,7 +16,7 @@ public class ProfilTask extends AsyncTask<Void, Void, Boolean> implements Connex
         return null;
     }
     @Override
-    public void onSuccess() {
+    public void onSuccess(Messages messages) {
 
 //        Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
 //        startActivity(intent);

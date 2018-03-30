@@ -1,5 +1,7 @@
 package com.exemple.poec.netpoecmobil.network;
 
+import com.exemple.poec.netpoecmobil.models.Messages;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -10,7 +12,7 @@ import retrofit2.http.Query;
 public interface ConnexionApi {
     @FormUrlEncoded
     @POST("connexion/")
-    Call<Long> connexion(@Field("email") String email, @Field("password") String password);
+    Call<Messages> connexion(@Field("email") String email, @Field("password") String password);
 
 
     @GET("connexion/profil")

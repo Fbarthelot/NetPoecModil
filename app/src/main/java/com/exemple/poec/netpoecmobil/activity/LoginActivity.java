@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exemple.poec.netpoecmobil.R;
+import com.exemple.poec.netpoecmobil.models.Messages;
 import com.exemple.poec.netpoecmobil.network.ConnexionService;
 import com.exemple.poec.netpoecmobil.task.ConnexionTask;
 
@@ -44,8 +45,7 @@ import retrofit2.Response;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, ConnexionTask.ConnexionTaskObserver {
 
 
     /**
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private ConnexionTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -99,10 +99,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-
-
-
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -110,9 +106,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     @DebugLog
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+//        if (mAuthTask != null) {
+//            return;
+//        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -149,13 +145,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
 
 
-
-
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new ConnexionTask(LoginActivity.this, email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -249,92 +241,105 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    @DebugLog
+    public void onSuccess(Messages messages) {
+        System.out.println(messages.messages);
+        switch (messages.messages) {
+            case "ok":
+                Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
+                startActivity(intent);
+                break;
+            case "badEmail":
+                Toast.makeText(LoginActivity.this, " email non reconnu", Toast.LENGTH_LONG).show();
+                break;
+            case "badPassword":
+                Toast.makeText(LoginActivity.this, " password incorrect", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                Toast.makeText(LoginActivity.this, " action incorrect", Toast.LENGTH_LONG).show();
+                break;
+        }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
 
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> implements ConnexionTask.ConnexionTaskObserver {
 
-        private final String mEmail;
-        private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
 
-        @Override
-        @DebugLog
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            ConnexionService.get().connexion(mEmail,mPassword).enqueue(new Callback<Long>() {
-                @Override
-                public void onResponse(Call<Long> call, Response<Long> response) {
+    @Override
+    @DebugLog
+    public void onError() {
 
-                    ConnexionTask connexionTask =new ConnexionTask(UserLoginTask.this);
-                    connexionTask.postNewUser(mEmail,mPassword);
+        Toast.makeText(LoginActivity.this, " erreur du serveur", Toast.LENGTH_LONG).show();
+    }
 
-                }
+    @Override
+    public void onCancel() {
 
-                @Override
-                public void onFailure(Call<Long> call, Throwable t) {
+    }
 
-                }
-            });
 
-            // TODO: register the new account here.
-            return true;
-        }
+private interface ProfileQuery {
+    String[] PROJECTION = {
+            ContactsContract.CommonDataKinds.Email.ADDRESS,
+            ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+    };
 
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
+    int ADDRESS = 0;
+    int IS_PRIMARY = 1;
+}
+
+/**
+ * Represents an asynchronous login/registration task used to authenticate
+ * the user.
+ */
+//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> implements ConnexionTask.ConnexionTaskObserver {
 //
-////            if (success) {
-////
-////            } else {
-////                mPasswordView.setError(getString(R.string.error_incorrect_password));
-////                mPasswordView.requestFocus();
-////            }
+//        private final String mEmail;
+//        private final String mPassword;
+//
+//        UserLoginTask(String email, String password) {
+//            mEmail = email;
+//            mPassword = password;
 //        }
-
-        @Override
-        @DebugLog
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-
-        @Override
-        @DebugLog
-        public void onSuccess() {
-            Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
-            startActivity(intent);
-        }
-
-        @Override
-        @DebugLog
-        public void onError() {
-            Toast.makeText(LoginActivity.this, " utilisateur inconnue", Toast.LENGTH_LONG).show();
-
-        }
-
-        @Override
-        public void onCancel() {
-
-
-        }
-    }
+//
+//        @Override
+//        @DebugLog
+//        protected Boolean doInBackground(Void... params) {
+//            // TODO: attempt authentication against a network service.
+//
+//                    ConnexionTask connexionTask =new ConnexionTask(UserLoginTask.this);
+//                    connexionTask.postNewUser(mEmail,mPassword);
+//
+//
+//
+//            // TODO: register the new account here.
+//            return true;
+//        }
+//
+//
+//
+//        @Override
+//        @DebugLog
+//        public void onSuccess() {
+//            Toast.makeText(LoginActivity.this, " réponce reçu", Toast.LENGTH_LONG).show();
+////            Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
+////            startActivity(intent);
+//        }
+//
+//        @Override
+//        @DebugLog
+//        public void onError() {
+//            Toast.makeText(LoginActivity.this, " erreur du serveur", Toast.LENGTH_LONG).show();
+//
+//        }
+//
+//        @Override
+//        public void onCancel() {
+//
+//
+//        }
+//    }
 }
 

@@ -1,37 +1,60 @@
 package com.exemple.poec.netpoecmobil.task;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import com.exemple.poec.netpoecmobil.activity.FilmActivity;
-import com.exemple.poec.netpoecmobil.activity.LoginActivity;
 import com.exemple.poec.netpoecmobil.models.Messages;
+import com.exemple.poec.netpoecmobil.models.User;
+import com.exemple.poec.netpoecmobil.network.ConnexionService;
 
-public class ProfilTask extends AsyncTask<Void, Void, Boolean> implements ConnexionTask.ConnexionTaskObserver{
+import hugo.weaving.DebugLog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ProfilTask extends AsyncTask<Void, Void, Boolean> {
+    private ProfilTaskObserver observer;
+    private String email;
+
+
+    public ProfilTask(ProfilTaskObserver observer, String email) {
+        this.observer = observer;
+        this.email = email;
+
+    }
+
     @Override
+    @DebugLog
     protected Boolean doInBackground(Void... voids) {
+        ConnexionService.get().profil(email).enqueue(new Callback<User>() {
+            @Override
+            @DebugLog
+            public void onResponse(Call<User> call, Response<User> response) {
+                User user = response.body();
+                observer.onSuccess(user);
 
+            }
 
+            @Override
+            @DebugLog
+            public void onFailure(Call<User> call, Throwable t) {
+                observer.onError();
+            }
+        });
         return null;
     }
-    @Override
-    public void onSuccess(Messages messages) {
 
-//        Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
-//        startActivity(intent);
+    @Override
+    protected void onCancelled() {
+        observer.onCancel();
     }
 
-    @Override
-    public void onError() {
-//        Toast.makeText(LoginActivity.this, " utilisateur inconnue", Toast.LENGTH_LONG).show();
+    public interface ProfilTaskObserver {
 
+        void onSuccess(User User);
 
-    }
+        void onError();
 
-    @Override
-    public void onCancel() {
-
+        void onCancel();
 
     }
 }

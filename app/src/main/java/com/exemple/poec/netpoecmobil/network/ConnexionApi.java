@@ -1,6 +1,7 @@
 package com.exemple.poec.netpoecmobil.network;
 
 import com.exemple.poec.netpoecmobil.models.Messages;
+import com.exemple.poec.netpoecmobil.models.User;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -16,6 +17,6 @@ public interface ConnexionApi {
 
 
     @GET("connexion/profil")
-    Call<String> profil(@Query("email")String email);
+    Call<User> profil(@Query("email")String email);
 
 }

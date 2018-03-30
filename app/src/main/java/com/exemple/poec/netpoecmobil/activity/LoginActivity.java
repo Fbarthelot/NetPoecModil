@@ -33,6 +33,8 @@ import com.exemple.poec.netpoecmobil.models.Messages;
 import com.exemple.poec.netpoecmobil.network.ConnexionService;
 import com.exemple.poec.netpoecmobil.task.ConnexionTask;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -65,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    public String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        this.email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
 
@@ -248,6 +251,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         switch (messages.messages) {
             case "ok":
                 Intent intent = new Intent(LoginActivity.this, FilmActivity.class);
+                intent.putExtra("email", Parcels.wrap(email));
                 startActivity(intent);
                 break;
             case "badEmail":

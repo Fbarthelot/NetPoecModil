@@ -10,9 +10,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnexionTask extends AsyncTask<Void, Void, Boolean>  {
+public class ConnexionTask extends AsyncTask<Void, Void, Boolean> {
     private ConnexionTaskObserver observer;
-    private Long id;
     private String email;
     private String password;
 
@@ -30,7 +29,7 @@ public class ConnexionTask extends AsyncTask<Void, Void, Boolean>  {
             @Override
             @DebugLog
             public void onResponse(Call<Messages> call, Response<Messages> response) {
-                Messages messages= response.body();
+                Messages messages = response.body();
                 observer.onSuccess(messages);
 
             }
@@ -43,6 +42,7 @@ public class ConnexionTask extends AsyncTask<Void, Void, Boolean>  {
         });
         return null;
     }
+
     @Override
     protected void onCancelled() {
         observer.onCancel();

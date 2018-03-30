@@ -1,6 +1,7 @@
 package com.exemple.poec.netpoecmobil.network;
 
 import com.exemple.poec.netpoecmobil.models.Messages;
+import com.exemple.poec.netpoecmobil.models.User;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ConnexionService {
 //                .baseUrl("http://10.110.11.108:9000/api/")
                 //connexion sur la machine de fabien
                 .baseUrl("http://10.110.11.110:9000/api/")
+
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -43,7 +45,7 @@ public class ConnexionService {
     }
 
     @DebugLog
-    public Call<String> profil(String email) {
+    public Call<User> profil(String email) {
 
         return api.profil(email);
 

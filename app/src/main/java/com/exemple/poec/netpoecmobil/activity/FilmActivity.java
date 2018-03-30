@@ -1,5 +1,6 @@
 package com.exemple.poec.netpoecmobil.activity;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.exemple.poec.netpoecmobil.R;
+import com.exemple.poec.netpoecmobil.models.User;
+import com.exemple.poec.netpoecmobil.task.ProfilTask;
 
-public class FilmActivity extends AppCompatActivity {
+import org.parceler.Parcels;
+
+public class FilmActivity extends AppCompatActivity implements ProfilTask.ProfilTaskObserver {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -31,16 +36,20 @@ public class FilmActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private String email;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
 
+    private ProfilTask mProfilTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film);
+        email = Parcels.unwrap(getIntent().getParcelableExtra("email"));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,6 +60,7 @@ public class FilmActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
 
 
     }
@@ -70,12 +80,36 @@ public class FilmActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
+        mProfilTask = new ProfilTask(FilmActivity.this, email);
+        mProfilTask.execute((Void) null);
+
+
+
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSuccess(User User) {
+
+        Intent intent = new Intent(FilmActivity.this, ProfilActivity.class);
+//        intent.putExtra("user", Parcels.wrap(user));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onCancel() {
+
     }
 
     /**
@@ -108,7 +142,7 @@ public class FilmActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_film, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
